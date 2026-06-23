@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
@@ -18,11 +18,7 @@ function Profile() {
     localStorage.getItem("user")
   );
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const res = await axios.get(
         `https://placement-portal-8sbz.onrender.com/api/user/${user.id}`
@@ -38,7 +34,11 @@ function Profile() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [user.id]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   const handleChange = (e) => {
     setFormData({

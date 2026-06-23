@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback} from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
@@ -16,11 +16,8 @@ function Dashboard() {
     placementPercentage: 0,
   });
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const user = JSON.parse(
         localStorage.getItem("user")
@@ -42,7 +39,11 @@ function Dashboard() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [role]);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const user = JSON.parse(
     localStorage.getItem("user")

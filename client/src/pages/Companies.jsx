@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Navbar from "../components/Navbar";
@@ -10,10 +10,6 @@ function Companies() {
   const [locationFilter, setLocationFilter] = useState("");
   const [, setApplicantCounts] =useState({});
 
- // eslint-disable-next-line react-hooks/exhaustive-deps
-useEffect(() => {
-  fetchCompanies();
-}, []);
 const fetchApplicantCounts =
   async (companiesData) => {
     const counts = {};
@@ -33,7 +29,7 @@ const fetchApplicantCounts =
 
     setApplicantCounts(counts);
   };
-  const fetchCompanies = async () => {
+  const fetchCompanies = useCallback(async () => {
     try {
       const res = await axios.get(
         "https://placement-portal-8sbz.onrender.com/api/company/all"
@@ -46,7 +42,11 @@ const fetchApplicantCounts =
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+  fetchCompanies();
+}, [fetchCompanies]);
 
   const applyJob = async (company) => {
       if (company.status === "Closed") {

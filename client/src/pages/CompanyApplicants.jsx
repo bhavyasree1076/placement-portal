@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -6,12 +6,8 @@ function CompanyApplicants() {
   const { companyId } = useParams();
 
   const [applications, setApplications] = useState([]);
-
-  useEffect(() => {
-    fetchApplicants();
-  }, []);
-  
-  const fetchApplicants = async () => {
+ 
+  const fetchApplicants = useCallback(async () => {
     try {
       const res = await axios.get(
         `https://placement-portal-8sbz.onrender.com/api/application/company/${companyId}`
@@ -21,7 +17,11 @@ function CompanyApplicants() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [companyId]);
+
+  useEffect(() => {
+    fetchApplicants();
+  }, [fetchApplicants]);
 
   return (
   <div className="company-applicants-container">
